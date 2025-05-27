@@ -1,4 +1,4 @@
-name: Docker Image Builder Ubuntu
+name: Docker Image Builder Debian
 
 # This workflow uses actions that are not certified by GitHub.
 # They are provided by a third-party and are governed by
@@ -9,7 +9,7 @@ on:
   schedule:
       - cron: '0 0 * * *' 
   push:
-    branches: [ "ubuntu" ]
+    branches: [ "debian" ]
   release:
     types: [published]
 
@@ -70,7 +70,7 @@ jobs:
         with:
           context: .
           tags: |
-            ghcr.io/nekosunevr/pterodactyl-vps-egg:latest-ubuntu
+            ghcr.io/nekosunevr/pterodactyl-vps-egg:latest-debian
           labels: ${{ steps.meta.outputs.labels }}
           build-args: release=1
           push: true
