@@ -9,7 +9,7 @@ on:
   schedule:
       - cron: '0 0 * * *' 
   push:
-    branches: [ "ubuntu" ]
+    branches: [ "alpine" ]
   release:
     types: [published]
 
@@ -70,7 +70,7 @@ jobs:
         with:
           context: .
           tags: |
-            ghcr.io/nekosunevr/pterodactyl-vps-egg:latest-ubuntu
+            ghcr.io/nekosunevr/pterodactyl-vps-egg:latest-alpine
           labels: ${{ steps.meta.outputs.labels }}
           build-args: release=1
           push: true
