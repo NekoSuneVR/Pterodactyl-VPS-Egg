@@ -227,7 +227,7 @@ check_network
 display_menu
 
 # Handle user selection and installation
-install "ubuntu" "Ubuntu"
+install "debian" "Debian"
 
 # Copy run.sh script to ROOTFS_DIR and make it executable
 cp /run.sh "$ROOTFS_DIR/run.sh"
