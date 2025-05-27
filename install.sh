@@ -17,7 +17,7 @@ readonly BASE_URL="https://images.linuxcontainers.org/images"
 export PATH=$PATH:~/.local/usr/bin
 
 # Get the length of the distributions array
-num_distros=2
+num_distros=1
 
 # Error handling function
 error_exit() {
