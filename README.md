@@ -8,6 +8,7 @@
 A powerful and lightweight Virtual Private Server (VPS) egg for Pterodactyl Panel, supporting multiple architectures and operating systems.
 </div>
 
+
 ## ✨ Features
 
 - 🚀 Easy deployment and management
