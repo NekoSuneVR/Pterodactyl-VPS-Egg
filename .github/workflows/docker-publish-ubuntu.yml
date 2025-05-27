@@ -6,12 +6,12 @@ name: Docker Image Builder Ubuntu
 # documentation.
 
 on:
+  schedule:
+      - cron: '0 0 * * *' 
   push:
-    branches:
-      - "ubuntu"
-    paths-ignore:
-      - "*.md"
-      - LICENSE
+    branches: [ "ubuntu" ]
+  release:
+    types: [published]
 
 env:
   # Use docker.io for Docker Hub if empty
