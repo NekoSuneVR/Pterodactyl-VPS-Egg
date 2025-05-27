@@ -97,7 +97,7 @@ install() {
     # Display available versions
     local -a versions=($image_names)
     for i in "${!versions[@]}"; do
-        printf "* [%d] %s (%s)\n" $((i)) "$pretty_name" "${versions[i]}"
+        printf "* [%d] %s (%s)\n" $((i + 1)) "$pretty_name" "${versions[i]}"
     done
     
     # Version selection with validation
@@ -105,7 +105,7 @@ install() {
     while true; do
         printf "${colors[YELLOW]}Enter the desired version (0-${#versions[@]}): ${colors[NC]}\n"
         read -r version
-        if [[ "$version" =~ ^[0-9]+$ ]] && ((version >= 1 && version <= ${#versions[@]})); then
+        if [[ "$version" =~ ^[1-9]+$ ]] && ((version >= 1 && version <= ${#versions[@]})); then
             break
         fi
         log "ERROR" "Invalid selection. Please try again." "RED"
