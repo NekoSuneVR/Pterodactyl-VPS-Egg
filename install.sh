@@ -103,7 +103,7 @@ install() {
     # Version selection with validation
     local version
     while true; do
-        printf "${colors[YELLOW]}Enter the desired version (0-${#versions[@]}): ${colors[NC]}\n"
+        printf "${colors[YELLOW]}Enter the desired version (1-${#versions[@]}): ${colors[NC]}\n"
         read -r version
         if [[ "$version" =~ ^[1-9]+$ ]] && ((version >= 1 && version <= ${#versions[@]})); then
             break
