@@ -16,32 +16,8 @@ readonly BASE_URL="https://images.linuxcontainers.org/images"
 # Add to PATH
 export PATH=$PATH:~/.local/usr/bin
 
-# Define all available distributions
-declare distributions=(
-    [1]="Debian"
-    [2]="Ubuntu"
-    [3]="Void Linux:true"
-    [4]="Alpine Linux"
-    [5]="CentOS"
-    [6]="Rocky Linux"
-    [7]="Fedora"
-    [8]="AlmaLinux"
-    [9]="Slackware Linux"
-    [10]="Kali Linux"
-    [11]="openSUSE"
-    [12]="Gentoo Linux:true"
-    [13]="Arch Linux"
-    [14]="Devuan Linux"
-    [15]="Chimera Linux:custom"
-    [16]="Oracle Linux"
-    [17]="Amazon Linux"
-    [18]="Plamo Linux"
-    [19]="Linux Mint"
-    [20]="Alt Linux"
-)
-
 # Get the length of the distributions array
-num_distros=${#distributions[@]}
+num_distros=2
 
 # Error handling function
 error_exit() {
@@ -171,72 +147,6 @@ install_custom() {
     rm -f "$ROOTFS_DIR/$file_name"
 }
 
-# Function to get Chimera Linux URL
-get_chimera_linux() {
-    local base_url="https://repo.chimera-linux.org/live/latest/"
-    local latest_file
-    
-    latest_file=$(curl -s "$base_url" | grep -o "chimera-linux-$ARCH-ROOTFS-[0-9]\{8\}-bootstrap\.tar\.gz" | sort -V | tail -n 1) ||
-    error_exit "Failed to fetch Chimera Linux version"
-    
-    if [ -n "$latest_file" ]; then
-        local date
-        date=$(echo "$latest_file" | grep -o '[0-9]\{8\}')
-        echo "${base_url}chimera-linux-$ARCH-ROOTFS-$date-bootstrap.tar.gz"
-    else
-        error_exit "No suitable Chimera Linux version found"
-    fi
-}
-
-# Function to install openSUSE Linux based on version
-install_opensuse_linux() {
-    declare -A opensuse_versions=(
-        [1]="openSUSE Leap"
-        [2]="openSUSE Tumbleweed"
-    )
-
-    printf "Select openSUSE version:\n"
-    for ((key=1; key<=${#opensuse_versions[@]}; key++)); do
-        printf "* [%s] %s\n" "$key" "${opensuse_versions[$key]}"
-    done
-    printf "* [0] Go Back\n"
-    
-    local opensuse_version
-    while true; do
-        printf "${colors[YELLOW]}Enter your choice (0-2): ${colors[NC]}\n"
-        read -r opensuse_version
-        case "$opensuse_version" in
-            0)
-            exec "$0"
-            ;;
-            1)
-            log "INFO" "Selected version: openSUSE Leap" "GREEN"
-            local url=""
-            case "$ARCH" in
-                aarch64|x86_64)
-                url="https://download.opensuse.org/distribution/openSUSE-current/appliances/opensuse-leap-dnf-image.${ARCH}-lxc-dnf.tar.xz"
-                install_custom "openSUSE Leap" "$url"
-                ;;
-                *)
-                error_exit "openSUSE Leap is not available for ${ARCH} architecture"
-                ;;
-            esac
-            break
-            ;;
-            2)
-            log "INFO" "Selected version: openSUSE Tumbleweed" "GREEN"
-            if [[ "$ARCH" == "x86_64" ]]; then
-                install_custom "openSUSE Tumbleweed" "https://download.opensuse.org/tumbleweed/appliances/opensuse-tumbleweed-dnf-image.x86_64-lxc-dnf.tar.xz"
-            else
-                error_exit "openSUSE Tumbleweed is not available for ${ARCH} architecture"
-            fi
-            break
-            ;;
-        esac
-        log "ERROR" "Invalid selection. Please try again." "RED"
-    done
-}
-
 # Function to download and extract rootfs
 download_and_extract_rootfs() {
     local distro_name="$1"
@@ -310,8 +220,6 @@ display_menu() {
     for i in "${!distributions[@]}"; do
         printf "* [%d] %s\n" "$i" "${distributions[$i]%%:*}"
     done
-    
-    printf "\n${colors[YELLOW]}Enter the desired distro (1-${num_distros}): ${colors[NC]}\n"
 }
 
 # Initial setup
@@ -322,75 +230,7 @@ check_network
 display_menu
 
 # Handle user selection and installation
-read -rp "" selection
-
-case "$selection" in
-    1)
-        install "debian" "Debian"
-    ;;
-    2)
-        install "ubuntu" "Ubuntu"
-    ;;
-    3)
-        install "voidlinux" "Void Linux" "true"
-    ;;
-    4)
-        install "alpine" "Alpine Linux"
-    ;;
-    5)
-        install "centos" "CentOS"
-    ;;
-    6)
-        install "rockylinux" "Rocky Linux"
-    ;;
-    7)
-        install "fedora" "Fedora"
-    ;;
-    8)
-        install "almalinux" "Alma Linux"
-    ;;
-    9)
-        install "slackware" "Slackware"
-    ;;
-    10)
-        install "kali" "Kali Linux"
-    ;;
-    11)
-        install_opensuse_linux
-    ;;
-    12)
-        install "gentoo" "Gentoo Linux" "true"
-    ;;
-    13)
-        install "archlinux" "Arch Linux"
-        post_install_config "archlinux"
-    ;;
-    14)
-        install "devuan" "Devuan Linux"
-    ;;
-    15)
-        chimera_url=$(get_chimera_linux)
-        install_custom "Chimera Linux" "$chimera_url"
-    ;;
-    16)
-        install "oracle" "Oracle Linux"
-    ;;
-    17)
-        install "amazonlinux" "Amazon Linux"
-    ;;
-    18)
-        install "plamo" "Plamo Linux"
-    ;;
-    19)
-        install "mint" "Linux Mint"
-    ;;
-    20)
-        install "alt" "Alt Linux"
-    ;;
-    *)
-        error_exit "Invalid selection (1-${num_distros})"
-    ;;
-esac
+install "ubuntu" "Ubuntu"
 
 # Copy run.sh script to ROOTFS_DIR and make it executable
 cp /run.sh "$ROOTFS_DIR/run.sh"
